@@ -1,3 +1,4 @@
+
 public class FileSystemObject implements Comparable <FileSystemObject> {
     private String name;
     private OrderedListADT<FileSystemObject> children;
@@ -8,16 +9,9 @@ public class FileSystemObject implements Comparable <FileSystemObject> {
     public FileSystemObject(String name, int id) {
         this.name = name;
         this.id = id;
-        this.children = null;
-        this.parent = null;
-    }
-
-    // file (child) constructor
-    public FileSystemObject(String name, int id, OrderedListADT<FileSystemObject> children) {
-        this.name = name;
-        this.id = id;
-        this.children = children;
-        this.parent = null;
+        if (isFile()) {
+            this.children = null;
+        } else this.children = new ArrayOrderedList<>();
     }
 
     // getters + setters
@@ -41,12 +35,52 @@ public class FileSystemObject implements Comparable <FileSystemObject> {
     }
 
     public boolean isFile() {
-        return this.children!=null;
+        return this instanceof ComputerFile;
+    }
+
+    // private helper method for addChild()
+    private void addChildAssist(FileSystemObject node) {
+
+        ArrayIterator<FileSystemObject> iter = (ArrayIterator<FileSystemObject>) children.iterator();
+        while(iter.hasNext()) {
+            if(iter.next().getName().equals(node.getName())) throw new DirectoryTreeException("file name already exists");
+        }
+        children.add(node);
     }
 
     public void addChild (FileSystemObject node) {
         if (isFile()) throw new DirectoryTreeException("we cannot store a file/folder within a file");
-        else
-            if ()
+        else addChildAssist(node);
+
+    }
+
+    public String toString() {
+        return name;
+    }
+
+    // private helper method for size()
+    private int sizeAssist(FileSystemObject node) {
+        int sum = 0;
+        if (!node.isFile()) { // if folder
+            ArrayIterator<FileSystemObject> iter = (ArrayIterator<FileSystemObject>) node.getChildren().iterator();
+            while(iter.hasNext()) {
+                sum += sizeAssist(iter.next());
+            }
+        } else sum+=node.size();
+
+        return sum;
+    }
+
+
+    public int size() {
+        if (isFile()) return this.size();
+        else return sizeAssist(this);
+    }
+
+
+    public int compareTo(FileSystemObject other) {
+        if (!this.isFile() && other.isFile()) return -10; // folder is "smaller" than a file and came first
+        else if (this.isFile() && !other.isFile()) return 10; // file is "larger" than a folder and came second
+        else return this.getName().compareToIgnoreCase(other.getName());
     }
 }
