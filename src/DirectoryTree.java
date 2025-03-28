@@ -1,3 +1,4 @@
+import java.nio.file.Files;
 import java.util.Iterator;
 public class DirectoryTree {
     private FileSystemObject root;
@@ -39,6 +40,42 @@ public class DirectoryTree {
         else if (level(a) == level(x)) return lca (a.getParent(), x.getParent());
         else if (level(b) == level(x)) return lca (b.getParent(), x.getParent());
         else return null;
+    }
+
+    public String buildPath (FileSystemObject a, FileSystemObject b) {
+        if (a.getParent() == b.getParent()) return b.getName();
+
+        FileSystemObject topNode = lca(a,b); // lowest common ancestor
+        StringBuilder sb = new StringBuilder();
+
+        // traverse up from a to topNode
+        FileSystemObject temp = a;
+        while(temp!=topNode) {
+            temp = temp.getParent();
+            sb.append("../");
+        }
+
+        // traverse down from topNode to b
+        ArrayOrderedList<String> downPath = new ArrayOrderedList<>();
+        temp = b;
+        while(temp!=topNode) {
+            downPath.add(temp.getName());
+            temp = temp.getParent();
+
+        }
+
+        // add items from downPath reversely to sb
+        while(!downPath.isEmpty()) {
+            String str = downPath.removeLast();
+            sb.append(str);
+            if (str!=downPath.first()) sb.append("/");
+
+        }
+
+        return sb.toString();
+
+
+
     }
 
 }
