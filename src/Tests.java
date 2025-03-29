@@ -6,11 +6,11 @@ public class Tests {
 
 	public static void main(String[] args) {
 
-		test01(); // DT toString
+		//test01(); // DT toString
 		test02(); // DT lca
-		test03(); // DT buildPath
-		test04(); // DT cutPaste
-		test05(); // DT copyPaste
+		//test03(); // DT buildPath
+		//test04(); // DT cutPaste
+		//test05(); // DT copyPaste
 	}
 
 	private static void test01 () {
@@ -18,10 +18,11 @@ public class Tests {
 		try {
 
 			DirectoryTree t = createTree();
-			//System.out.println();
-			//System.out.println(t);
+			System.out.println();
+			System.out.println(t);
 
-			String exp = "C:\n"
+			String exp =
+					  "C:\n"
 					+ " - Users\n"
 					+ "   - Alice\n"
 					+ "     - Website\n"
@@ -39,7 +40,7 @@ public class Tests {
 					+ "     - asst3.pdf\n"
 					+ "     - asst4.pdf\n"
 					+ "   - resume.docx";
-
+			
 			if (t.toString().strip().equals(exp.strip())) {
 				System.out.println("\t\t PASSED!");
 			} else {
@@ -51,8 +52,7 @@ public class Tests {
 			e.printStackTrace();
 		}
 	}
-	
-	
+
 	private static void test02 () {
 		System.out.print("Test 2 - lca()");
 		try {

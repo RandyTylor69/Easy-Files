@@ -18,7 +18,7 @@ public class FileSystemObject implements Comparable <FileSystemObject> {
     public String getName() {
         return name;
     }
-    public int getId() {
+    public int getID() {
         return id;
     }
     public FileSystemObject getParent() {
@@ -51,6 +51,7 @@ public class FileSystemObject implements Comparable <FileSystemObject> {
     public void addChild (FileSystemObject node) {
         if (isFile()) throw new DirectoryTreeException("we cannot store a file/folder within a file");
         else addChildAssist(node);
+        node.setParent(this);
 
     }
 
