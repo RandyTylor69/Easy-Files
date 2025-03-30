@@ -1,5 +1,7 @@
+import java.io.File;
 import java.nio.file.Files;
 import java.util.Iterator;
+
 public class DirectoryTree {
     private FileSystemObject root;
 
@@ -23,13 +25,14 @@ public class DirectoryTree {
         if (level(a) > level (b)) {
             x = a;
             while (level(x)!=level(b)) {
-                x = a.getParent();
+                x = x.getParent();
             }
         }
 
         else if (level(b) > level (a)) {
             x = b;
-            while (level(a)!=level(x)) x = b.getParent();
+            while (level(a)!=level(x))
+                x = x.getParent();
         }
 
         // step 2
@@ -72,15 +75,13 @@ public class DirectoryTree {
 
         // add items from downPath reversely to sb
         while(!downPath.isEmpty()) {
-            String str = downPath.removeLast();
+            String str = downPath.removeFirst();
             sb.append(str);
-            if (str!=downPath.first()) sb.append("/");
+            if (!downPath.isEmpty()) sb.append("/");
 
         }
 
         return sb.toString();
-
-
 
     }
 
@@ -120,10 +121,55 @@ public class DirectoryTree {
     }
 
     public void cutPaste(FileSystemObject f, FileSystemObject dest) {
-        // fill
+        if (dest.isFile()) throw new DirectoryTreeException("destination cannot be a file");
+
+        if (f == root) throw new DirectoryTreeException("cannot remove the root of the directory");
+
+        // --- remove the file/folder
+        f.getParent().getChildren().remove(f);
+
+        // --- move file/folder into dest
+        f.setParent(dest);
+        dest.addChild(f);
     }
+
     public void copyPaste(FileSystemObject f, FileSystemObject dest) {
-        // fill
+        if (dest.isFile()) throw new DirectoryTreeException("destination cannot be a file");
+
+        // --- clone the original file
+        if (f.isFile()) {
+            FileSystemObject clone = new ComputerFile(f.getName(), f.getID()+100, f.size());
+            dest.addChild(clone);
+            clone.setParent(dest);
+        }
+        else {
+            FileSystemObject clone = copyPasteHelper(new FileSystemObject(f.getName(), f.getID()+100), f);
+            dest.addChild(clone);
+            clone.setParent(dest);
+        }
+
+    }
+
+    private FileSystemObject copyPasteHelper(FileSystemObject f, FileSystemObject orig) {
+
+        // base case
+        if (f==null) return null;
+
+        // recursion
+        ArrayIterator<FileSystemObject> iter = (ArrayIterator<FileSystemObject>) orig.getChildren().iterator();
+
+        while(iter.hasNext()) {
+
+            FileSystemObject curr = iter.next();
+
+            if (!curr.isFile()) {
+                f.addChild(new FileSystemObject(curr.getName(), curr.getID()+100));
+            } else {
+                f.addChild(new ComputerFile(curr.getName(), curr.getID()+100, curr.size()));
+            }
+        }
+        return f;
+
     }
 
 

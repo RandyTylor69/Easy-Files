@@ -7,10 +7,10 @@ public class Tests {
 	public static void main(String[] args) {
 
 		//test01(); // DT toString
-		test02(); // DT lca
+		//test02(); // DT lca
 		//test03(); // DT buildPath
 		//test04(); // DT cutPaste
-		//test05(); // DT copyPaste
+		test05(); // DT copyPaste
 	}
 
 	private static void test01 () {
@@ -59,8 +59,8 @@ public class Tests {
 			
 			DirectoryTree t = createTree();
 
-			FileSystemObject f1 = getNodeByID(10);
-			FileSystemObject f2 = getNodeByID(11);
+			FileSystemObject f1 = getNodeByID(10); // 10
+			FileSystemObject f2 = getNodeByID(11); // 11
 			FileSystemObject f3 = getNodeByID(12);
 			FileSystemObject f4 = getNodeByID(15);
 			
