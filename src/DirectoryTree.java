@@ -17,9 +17,16 @@ public class DirectoryTree {
     }
 
     public FileSystemObject lca (FileSystemObject a, FileSystemObject b) {
-        // step 1
 
         FileSystemObject x = null;
+
+        // return root
+        if (a == root) return a;
+        else if (b == root) return b;
+
+        // return if direct parent
+        if (a.getParent() == b) return b;
+        else if (b.getParent() == a) return a;
 
 
         if (level(a) > level (b)) {
@@ -52,35 +59,53 @@ public class DirectoryTree {
     }
 
     public String buildPath (FileSystemObject a, FileSystemObject b) {
+
         if (a.getParent() == b.getParent()) return b.getName();
 
         FileSystemObject topNode = lca(a,b); // lowest common ancestor
         StringBuilder sb = new StringBuilder();
 
-        // traverse up from a to topNode
-        FileSystemObject temp = a;
-        while(temp!=topNode) {
-            temp = temp.getParent();
-            sb.append("../");
+        FileSystemObject temp;
+
+        // if topNode == either a or b, ignore this block
+        if (topNode != a || topNode != b) {
+            temp = a;
+
+            // traverse up from a to topNode
+            while(temp!=topNode) {
+                temp = temp.getParent();
+
+                // System.out.println("visiting "  + temp);
+
+                sb.append("../");
+            }
         }
 
         // traverse down from topNode to b
-        ArrayOrderedList<String> downPath = new ArrayOrderedList<>();
+        String[] downPath = new String[10];
+        int i = 0;
+
         temp = b;
         while(temp!=topNode) {
-            downPath.add(temp.getName());
+            downPath[i] = (temp.getName());
             temp = temp.getParent();
+            i++;
 
         }
 
         // add items from downPath reversely to sb
-        while(!downPath.isEmpty()) {
-            String str = downPath.removeFirst();
+        while(downPath[0]!= null) { // while downPath is not empty
+
+            String str = "";
+            for (int j = 9; j >= 0; j--) {
+                if (downPath[j]!=null) {str = downPath[j];
+                downPath[j] = null;
+                break;}
+            }
             sb.append(str);
-            if (!downPath.isEmpty()) sb.append("/");
+            if (downPath[0]!=null) sb.append("/");
 
         }
-
         return sb.toString();
 
     }
@@ -101,8 +126,8 @@ public class DirectoryTree {
             //System.out.println("\n" + r.getName() );
 
         } else {
-            int hyp = level(r);
-            sb.append((" ").repeat(hyp) + " - " + r.getName() + "\n");
+            int hyp = level(r) - 1;
+            sb.append(("  ").repeat(hyp) + " - " + r.getName() + "\n");
 
             //System.out.println((" ").repeat(hyp) + "- " + r.getName());
         }
@@ -135,6 +160,8 @@ public class DirectoryTree {
 
     public void copyPaste(FileSystemObject f, FileSystemObject dest) {
         if (dest.isFile()) throw new DirectoryTreeException("destination cannot be a file");
+
+        System.out.println("copying " + f + " to " + dest);
 
         // --- clone the original file
         if (f.isFile()) {
