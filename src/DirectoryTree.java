@@ -163,39 +163,32 @@ public class DirectoryTree {
 
         System.out.println("copying " + f + " to " + dest);
 
-        // --- clone the original file
         if (f.isFile()) {
             FileSystemObject clone = new ComputerFile(f.getName(), f.getID()+100, f.size());
             dest.addChild(clone);
-            clone.setParent(dest);
         }
         else {
-            FileSystemObject clone = copyPasteHelper(new FileSystemObject(f.getName(), f.getID()+100), f);
-            dest.addChild(clone);
-            clone.setParent(dest);
+           copyPasteHelper(f, dest);
         }
 
     }
 
-    private FileSystemObject copyPasteHelper(FileSystemObject f, FileSystemObject orig) {
+    private void copyPasteHelper(FileSystemObject source, FileSystemObject dest) {
 
-        // base case
-        if (f==null) return null;
+        FileSystemObject newFolder = new FileSystemObject(source.getName(), source.getID()+100);
+        dest.addChild(newFolder);
 
-        // recursion
-        ArrayIterator<FileSystemObject> iter = (ArrayIterator<FileSystemObject>) orig.getChildren().iterator();
+        ArrayIterator<FileSystemObject> iter = (ArrayIterator<FileSystemObject>) source.getChildren().iterator();
 
-        while(iter.hasNext()) {
+        while (iter.hasNext()) {
+            FileSystemObject node = iter.next();
 
-            FileSystemObject curr = iter.next();
-
-            if (!curr.isFile()) {
-                f.addChild(new FileSystemObject(curr.getName(), curr.getID()+100));
+            if (node.isFile()) {
+                newFolder.addChild(new ComputerFile(node.getName(), node.getID()+100, node.size()));
             } else {
-                f.addChild(new ComputerFile(curr.getName(), curr.getID()+100, curr.size()));
+                copyPasteHelper(node, dest);
             }
         }
-        return f;
 
     }
 

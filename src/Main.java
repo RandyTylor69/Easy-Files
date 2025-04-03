@@ -9,40 +9,21 @@ public class Main {
     }
 
     private static void test02 () {
-        System.out.print("Test 2 - lca()");
 
         try {
+            DirectoryTree t = createTree();
 
-            DirectoryTree t = createTreeSimpsons();
-            System.out.println();
+            int origSize = t.getRoot().size();
 
-            FileSystemObject f1 = getNodeByID(3); // 013
-            FileSystemObject f2 = getNodeByID(13); // 007
+            FileSystemObject f = getNodeByID(3); // documents
+            FileSystemObject d = getNodeByID(6); // lisa
 
-            t.copyPaste(f1, f2);
-            System.out.println();
+            t.copyPaste(f, d);
+
             System.out.println(t);
-            //FileSystemObject f1 = getNodeByID(10); // 10
-            //FileSystemObject f2 = getNodeByID(11); // 11
-            //FileSystemObject f3 = getNodeByID(12);
-            //FileSystemObject f4 = getNodeByID(15);
 
-            //FileSystemObject exp1 = getNodeByID(5);
-            //FileSystemObject exp2 = getNodeByID(9);
-            //FileSystemObject exp3 = getNodeByID(1);
-
-            //boolean b1 = t.lca(f1, f2) == exp1;
-            //boolean b2 = t.lca(f2, f3) == exp2;
-            //boolean b3 = t.lca(f3, f4) == exp3;
-
-            //if (b1 && b2 && b3) {
-
-            //System.out.println("\t\t\t PASSED!");
-            //} else {
-            //System.out.println("\t\t\t FAILED");
-            //}
         } catch (Exception e) {
-            System.out.println("\t\t\t FAILED (Exception)");
+            System.out.println("\t\t FAILED (Exception)");
             System.out.println(e + " - " + e.getMessage());
             e.printStackTrace();
         }

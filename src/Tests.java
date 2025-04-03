@@ -8,9 +8,9 @@ public class Tests {
 
 		//test01(); // DT toString
 		//test02(); // DT lca
-		test03(); // DT buildPath
+		//test03(); // DT buildPath
 		//test04(); // DT cutPaste
-		//test05(); // DT copyPaste
+		test05(); // DT copyPaste
 	}
 
 	private static void test01 () {
